@@ -421,6 +421,107 @@
   .confetti { position: fixed; z-index: 9999; width: 8px; height: 12px; border-radius: 2px; pointer-events: none; }
   .float-heart { position: fixed; z-index: 9999; pointer-events: none; line-height: 1; transform: translate(-50%, 0); }
 
+  /* ---------- 80s mode (Konami code) ---------- */
+  html.retro {
+    --bg: #0d0221;
+    --card: rgba(255, 255, 255, 0.07);
+    --card-border: rgba(255, 43, 214, 0.5);
+    --text: #fff0ff;
+    --muted: #cdb0ff;
+    --accent: #00e5ff;
+    --accent-2: #ffe14d;
+    --accent-3: #7a1fff;
+    --purple: #ff2bd6;
+  }
+  html.retro .fan-group.blue, html.retro .friend { --c: 0, 229, 255; }
+  html.retro .fan-group.purple, html.retro .friend.purple { --c: 255, 43, 214; }
+
+  html.retro body {
+    background: linear-gradient(180deg, #0d0221 0%, #1d0b4a 40%, #4b1a8a 68%, #b0208f 100%) fixed;
+    font-family: "Courier New", Courier, monospace;
+    font-weight: 700;
+  }
+  html.retro .blobs { display: none; }
+
+  /* glowing grid floor */
+  html.retro body::before {
+    content: "";
+    position: fixed; left: -60%; right: -60%; bottom: 0; height: 46vh;
+    z-index: -1;
+    background-image:
+      linear-gradient(rgba(0, 229, 255, 0.45) 2px, transparent 2px),
+      linear-gradient(90deg, rgba(0, 229, 255, 0.45) 2px, transparent 2px);
+    background-size: 64px 64px;
+    transform: perspective(260px) rotateX(62deg);
+    transform-origin: 50% 100%;
+    -webkit-mask-image: linear-gradient(to top, #000 30%, transparent);
+            mask-image: linear-gradient(to top, #000 30%, transparent);
+    animation: gridmove 1.4s linear infinite;
+  }
+  @keyframes gridmove { to { background-position: 0 64px, 0 0; } }
+
+  /* striped sunset */
+  html.retro body::after {
+    content: "";
+    position: fixed; left: 50%; bottom: 26vh; z-index: -2;
+    width: min(46vmin, 340px); height: min(46vmin, 340px);
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: linear-gradient(180deg, #ffe14d 10%, #ff7a3d 45%, #ff2bd6 85%);
+    -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent 55% 60%, #000 60% 69%, transparent 69% 75%, #000 75% 83%, transparent 83% 89%, #000 89%);
+            mask-image: linear-gradient(to bottom, #000 55%, transparent 55% 60%, #000 60% 69%, transparent 69% 75%, #000 75% 83%, transparent 83% 89%, #000 89%);
+  }
+
+  /* old TV: scanlines, dark corners, a tiny flicker */
+  html.retro::after {
+    content: "";
+    position: fixed; inset: 0; z-index: 9990; pointer-events: none;
+    background:
+      repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0.22) 0 1px, transparent 1px 3px),
+      radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.55) 100%);
+    animation: flicker 5s linear infinite;
+  }
+  @keyframes flicker {
+    0%, 46%, 50%, 100% { opacity: 1; }
+    48% { opacity: 0.8; }
+  }
+
+  /* pixel font for titles (loaded only when the secret is found) */
+  html.retro h1, html.retro h2, html.retro .fan-group h3, html.retro .now .label,
+  html.retro .tile .kind, html.retro .tile .name, html.retro .car .small, html.retro .car .name,
+  html.retro .f-name, html.retro .link, html.retro .toast, html.retro .tagline {
+    font-family: "Press Start 2P", "Courier New", monospace;
+    font-weight: 400;
+  }
+  html.retro h1 { font-size: clamp(1.5rem, 5vw, 2.7rem); line-height: 1.35; text-transform: uppercase; filter: drop-shadow(0 0 12px rgba(255, 43, 214, 0.7)); }
+  html.retro h2 { font-size: 1.15rem; line-height: 1.6; text-transform: uppercase; }
+  html.retro .tagline { font-size: clamp(0.7rem, 2vw, 0.95rem); line-height: 1.8; }
+  html.retro .fan-group h3 { font-size: 0.7rem; text-transform: uppercase; }
+  html.retro .tile .name { font-size: 0.6rem; line-height: 1.5; }
+  html.retro .car .name { font-size: clamp(0.9rem, 3vw, 1.3rem); line-height: 1.5; }
+  html.retro .f-name { font-size: 0.7rem; line-height: 1.5; }
+  html.retro .link { font-size: 0.7rem; text-transform: uppercase; }
+  html.retro .toast { font-size: 0.65rem; border-radius: 4px; border-color: var(--accent); }
+
+  /* chunky neon boxes */
+  html.retro .tile, html.retro .friend, html.retro .car, html.retro .now,
+  html.retro .link, html.retro .swatch { border-radius: 4px; }
+  html.retro .avatar { border-radius: 10px; }
+  html.retro .tile, html.retro .friend {
+    border-color: rgb(var(--c));
+    box-shadow: 0 0 14px rgba(var(--c), 0.45), inset 0 0 14px rgba(var(--c), 0.15);
+  }
+  html.retro .friend:hover, html.retro .friend:focus-visible {
+    box-shadow: 0 0 26px rgba(var(--c), 0.8), inset 0 0 14px rgba(var(--c), 0.25);
+  }
+  html.retro .car { border-color: var(--accent); box-shadow: 0 0 16px rgba(0, 229, 255, 0.4); }
+  html.retro .car:hover { border-color: var(--purple); box-shadow: 0 0 28px rgba(255, 43, 214, 0.7); }
+  html.retro .now {
+    background: linear-gradient(135deg, rgba(0, 229, 255, 0.16), rgba(255, 43, 214, 0.16));
+    border-color: var(--accent);
+    box-shadow: 0 0 18px rgba(0, 229, 255, 0.35);
+  }
+
   /* Respect people who turn animations off in their device settings */
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation: none !important; transition: none !important; }
@@ -929,16 +1030,45 @@
     ], { duration: 300, iterations: 3 });
   }
 
-  /* ---- Konami code (up up down down left right left right b a): colors go wild ---- */
+  /* ---- Konami code (up up down down left right left right b a): turns 80s mode on and off ---- */
+  const originalTitle = document.title;
+  let fontLoaded = false;
+
+  function powerUpSound() {   // quick arcade "power up" run of notes
+    try {
+      const ctx = getCtx(); if (!ctx) return;
+      [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => {
+        const t = ctx.currentTime + i * 0.09;
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = "square"; o.frequency.setValueAtTime(f, t);
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.exponentialRampToValueAtTime(0.07, t + 0.01);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + 0.14);
+        o.connect(g); g.connect(ctx.destination);
+        o.start(t); o.stop(t + 0.16);
+      });
+    } catch (err) { /* no sound is fine */ }
+  }
+
   function partyMode() {
-    toast("✨ HappyGuy mode unlocked");
-    confetti(window.innerWidth / 2, window.innerHeight / 3, 90);
-    if (reduceMotion) return;
-    [".wrap", ".blobs"].forEach((sel) => {
-      document.querySelector(sel).animate(
-        [{ filter: "hue-rotate(0deg)" }, { filter: "hue-rotate(360deg)" }],
-        { duration: 4000, iterations: 2 });
-    });
+    const root = document.documentElement;
+    const on = !root.classList.contains("retro");
+    if (on && !fontLoaded) {   // the pixel font is only fetched if someone finds the secret
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = "https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap";
+      document.head.appendChild(link);
+      fontLoaded = true;
+    }
+    root.classList.toggle("retro", on);
+    document.title = on ? "★ @HappyGuy! ★ 1985" : originalTitle;
+    toast(on ? "📼 1985 mode on. Enter the code again to go back." : "Back to the future ⚡");
+    powerUpSound();
+    if (!reduceMotion) {
+      document.querySelector(".wrap").animate(
+        [{ filter: "brightness(3) contrast(1.6)", opacity: 0.3 }, { filter: "brightness(1) contrast(1)", opacity: 1 }],
+        { duration: 600, easing: "ease-out" });
+    }
   }
 
   const KONAMI = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"];
