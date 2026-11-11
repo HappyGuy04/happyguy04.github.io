@@ -206,6 +206,60 @@
   }
   @keyframes shimmer { to { background-position: -220% 0; } }
 
+  /* ---------- Clickable "Currently working on" card + DOORS-style achievement popup ---------- */
+  .now.clickable { cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent; }
+  .now.clickable.reveal.visible { transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease; }
+  .now.clickable.reveal.visible:hover { transform: translateY(-4px); border-color: var(--accent-2); box-shadow: 0 16px 40px rgba(112,161,226,0.28); }
+  .now.clickable.reveal.visible:active { transform: scale(0.985); }
+  .now.clickable:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 4px; }
+
+  .ach {
+    position: fixed; top: 14px; left: 50%; z-index: 9997;
+    width: min(460px, calc(100vw - 24px));
+    padding: 12px 14px 14px;
+    border-radius: 18px;
+    font-family: "Oswald", "Arial Narrow", "Roboto Condensed", system-ui, sans-serif;
+    background:
+      repeating-linear-gradient(100deg, rgba(0,0,0,0.10) 0 3px, transparent 3px 9px),
+      linear-gradient(180deg, #7a2418, #4d130e);
+    border: 1px solid rgba(255, 214, 170, 0.35);
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.6);
+    transform: translate(-50%, -150%);
+    opacity: 0;
+    pointer-events: none;
+    cursor: pointer;
+    transition: transform 0.65s cubic-bezier(.2, 1.25, .3, 1), opacity 0.3s ease;
+  }
+  .ach.show { transform: translate(-50%, 0); opacity: 1; pointer-events: auto; }
+  .ach-head {
+    margin: 0 0 8px 4px;
+    font-size: 0.95rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    color: #ffd9b3;
+    text-shadow: 0 2px 0 rgba(0, 0, 0, 0.55);
+  }
+  .ach-card {
+    display: flex; align-items: center; gap: 16px;
+    padding: 12px 18px 12px 14px;
+    border-radius: 16px;
+    background: linear-gradient(180deg, #4a1511, #2e0b09);
+    border: 3px solid #f4cba3;
+    box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.3), 0 4px 14px rgba(0, 0, 0, 0.4);
+  }
+  .ach-icon {
+    position: relative; flex: none;
+    width: 84px; height: 84px;
+    display: grid; place-items: center;
+    font-size: 4.4rem; line-height: 1;
+  }
+  .ach-icon img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+  .ach-title { font-size: 1.7rem; font-weight: 600; line-height: 1.1; color: #fff; }
+  .ach-desc { margin-top: 4px; font-size: 1.05rem; font-weight: 400; line-height: 1.3; color: #f1c9a0; }
+  @media (max-width: 480px) {
+    .ach-icon { width: 64px; height: 64px; font-size: 3.3rem; }
+    .ach-title { font-size: 1.4rem; }
+    .ach-desc { font-size: 0.95rem; }
+  }
+
   /* ---------- Now listening (Last.fm, which reads your Spotify) ---------- */
   .listen {
     position: relative;
@@ -743,7 +797,7 @@
   <section>
     <div class="stack">
 
-      <div class="now reveal">
+      <div class="now clickable reveal" id="workCard" role="button" tabindex="0" aria-label="Currently working on: A Roblox badge tracker for DOORS. Click to unlock an achievement.">
         <div class="label"><span class="pulse"></span> Currently working on</div>
         <h3>A Roblox badge tracker for DOORS</h3>
         <p>Keeping track of every badge so you can see what you've earned and what's left to hunt.</p>
@@ -1022,6 +1076,23 @@
 
 </main>
 
+<!-- DOORS-style achievement popup. Click "Currently working on" to show it.
+     EDIT ME: change the title/description here. For the icon, upload images/QA_Tester.png
+     (a square picture); until then the emoji shows. -->
+<div class="ach" id="ach" role="status" aria-live="polite">
+  <div class="ach-head">Unlocked Achievement</div>
+  <div class="ach-card">
+    <div class="ach-icon">
+      <img src="images/QA_Tester.png" alt="" onerror="this.remove()" onload="this.nextElementSibling.style.display='none'">
+      <span>😁</span>
+    </div>
+    <div>
+      <div class="ach-title">QA Tester</div>
+      <div class="ach-desc">You're special! Not in a mean way.<br>Test stuff.</div>
+    </div>
+  </div>
+</div>
+
 <footer>Made with <span id="heart" style="color: var(--purple); cursor: pointer;">♥</span> by happyguy04</footer>
 
 <script>
@@ -1097,7 +1168,7 @@
      Last.fm keys are read-only and meant for this kind of use.
      ===================================================== */
   const LASTFM_USER = "StillHappyGuy";   // your Last.fm username
-  const LASTFM_KEY  = "	0b5fa3ea2d07713d45d6a4c433817a77";   // your Last.fm API key
+  const LASTFM_KEY  = "0b5fa3ea2d07713d45d6a4c433817a77";   // your Last.fm API key
   const LISTEN_REFRESH_MS = 30000;   // check again every 30 seconds
 
   const listenEl = document.getElementById("listen");
@@ -1437,6 +1508,60 @@
       if (typed === "doors") { typed = ""; knock(); }
     }
   });
+
+  /* ---- Click "Currently working on": a DOORS-style achievement pops down from the top ---- */
+  const achEl = document.getElementById("ach");
+  const workCard = document.getElementById("workCard");
+  const ACH_SHOW_MS = 5500;   // how long it stays on screen
+  let achTimer, achFontTried = false;
+
+  function achSound() {   // soft three-note chime, made with the browser synth
+    try {
+      const ctx = getCtx(); if (!ctx) return;
+      [[659.25, 0], [880, 0.12], [1318.5, 0.26]].forEach(([f, d]) => {
+        const t = ctx.currentTime + d;
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = "triangle"; o.frequency.setValueAtTime(f, t);
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.exponentialRampToValueAtTime(0.12, t + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + 0.5);
+        o.connect(g); g.connect(ctx.destination);
+        o.start(t); o.stop(t + 0.55);
+      });
+    } catch (err) { /* no sound is fine */ }
+  }
+
+  function hideAchievement() { achEl.classList.remove("show"); }
+
+  async function showAchievement() {
+    if (!achFontTried) {   // the condensed font is only fetched the first time someone clicks
+      achFontTried = true;
+      await new Promise((resolve) => {
+        const bail = setTimeout(resolve, 1200);
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = "https://fonts.googleapis.com/css2?family=Oswald:wght@400;600&display=swap";
+        link.onload = () => {
+          (document.fonts ? document.fonts.load("600 24px Oswald") : Promise.resolve())
+            .catch(() => {}).then(() => { clearTimeout(bail); resolve(); });
+        };
+        link.onerror = () => { clearTimeout(bail); resolve(); };
+        document.head.appendChild(link);
+      });
+    }
+    clearTimeout(achTimer);
+    achEl.classList.remove("show");
+    void achEl.offsetWidth;   // restart the slide if it was already showing
+    achEl.classList.add("show");
+    achSound();
+    achTimer = setTimeout(hideAchievement, ACH_SHOW_MS);
+  }
+
+  workCard.addEventListener("click", showAchievement);
+  workCard.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); showAchievement(); }
+  });
+  achEl.addEventListener("click", () => { clearTimeout(achTimer); hideAchievement(); });   // click the popup to dismiss it
 
   /* ---- A hello for anyone who opens the developer console ---- */
   console.log("%cHey, you found the console 👀", "color:#70A1E2;font-size:16px;font-weight:bold");
