@@ -342,6 +342,85 @@
   .fans .reveal:nth-child(3) { transition-delay: 0.2s; }
   .fans .reveal:nth-child(4) { transition-delay: 0.3s; }
 
+  /* ---------- Friends ---------- */
+  .friends { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; }
+  .friend {
+    --c: 112, 161, 226;
+    display: flex; align-items: center; gap: 14px;
+    padding: 16px 18px;
+    border-radius: 18px;
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    color: var(--text);
+    text-decoration: none;
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  }
+  .friend.purple { --c: 194, 104, 236; }
+  .friend:hover, .friend:focus-visible {
+    transform: translateY(-5px);
+    border-color: rgb(var(--c));
+    box-shadow: 0 14px 34px rgba(var(--c), 0.28);
+    outline: none;
+  }
+  .pfp {
+    position: relative; flex: none;
+    width: 54px; height: 54px; border-radius: 50%;
+    display: grid; place-items: center;
+    font-weight: 800; font-size: 1.3rem;
+    color: #0a1226;
+    background: linear-gradient(135deg, rgb(var(--c)), var(--accent-2));
+    overflow: hidden;
+    transition: transform 0.3s cubic-bezier(.3, 1.6, .5, 1);
+  }
+  .pfp img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .friend:hover .pfp { transform: rotate(-8deg) scale(1.12); }
+  .f-text { display: flex; flex-direction: column; min-width: 0; }
+  .f-name { font-weight: 700; }
+  .f-note { color: var(--muted); font-size: 0.85rem; }
+
+  /* ---------- Easter eggs ---------- */
+  .avatar { user-select: none; }
+
+  /* The dream car card is clickable */
+  .car { cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent; }
+  .car.reveal.visible { transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease; }
+  .car.reveal.visible:hover { transform: translateY(-4px); }
+  .car.reveal.visible:active { transform: scale(0.98); }
+  .car:focus-visible { outline: 2px solid var(--purple); outline-offset: 4px; }
+  .car.rev { animation: rev 0.45s ease; }
+  @keyframes rev {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-5px); }
+    40% { transform: translateX(5px); }
+    60% { transform: translateX(-3px); }
+    80% { transform: translateX(3px); }
+  }
+
+  /* The car that zooms across the screen. The white outline gives it that
+     badly-cut-out sticker look. */
+  .zoomer { position: fixed; left: 0; top: 0; z-index: 9999; pointer-events: none; will-change: transform; }
+  .zoomer img { display: block; max-width: none; }
+  .zoomer img, .zoomer-emoji {
+    filter: drop-shadow(3px 0 0 #fff) drop-shadow(-3px 0 0 #fff)
+            drop-shadow(0 3px 0 #fff) drop-shadow(0 -3px 0 #fff)
+            drop-shadow(0 10px 14px rgba(0, 0, 0, 0.5));
+  }
+  .zoomer-emoji { line-height: 1; white-space: nowrap; }
+
+  .toast {
+    position: fixed; left: 50%; bottom: 28px; z-index: 9998;
+    transform: translate(-50%, 20px);
+    padding: 10px 20px; border-radius: 999px;
+    background: rgba(16, 24, 48, 0.94);
+    border: 1px solid var(--purple);
+    color: var(--text); font-size: 0.95rem;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+  .confetti { position: fixed; z-index: 9999; width: 8px; height: 12px; border-radius: 2px; pointer-events: none; }
+  .float-heart { position: fixed; z-index: 9999; pointer-events: none; line-height: 1; transform: translate(-50%, 0); }
+
   /* Respect people who turn animations off in their device settings */
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation: none !important; transition: none !important; }
@@ -360,7 +439,7 @@
 <main class="wrap">
 
   <header class="hero">
-    <div class="avatar">H</div>
+    <div class="avatar" id="avatar">H</div>
     <h1>Hey, I'm happyguy04</h1>
     <p class="tagline"><span id="typed"></span><span class="cursor"></span></p>
     <div class="scroll-hint">scroll down &darr;</div>
@@ -513,12 +592,39 @@
 
     </div>
 
-    <div class="car reveal">
+    <div class="car reveal" id="car" role="button" tabindex="0" aria-label="Dream car: 2018 Camaro ZL1 1LE">
       <div>
         <div class="small">Dream car</div>
         <div class="name">2018 Camaro ZL1 1LE</div>
       </div>
       <span class="emoji">🏎️</span>
+    </div>
+  </section>
+
+  <!-- EDIT ME: your friends. Copy a whole <a class="friend"> block to add more.
+       Only add people who are OK with being on your page.
+       href = their link (YouTube, Roblox, etc.). Use class "blue" or "purple" for the color.
+       Picture: upload one to the images folder and change the src. With no picture,
+       the first letter of the name shows instead. -->
+  <section>
+    <h2 class="reveal">My <span>friends</span></h2>
+    <div class="friends reveal">
+      <a class="friend blue" href="#" target="_blank" rel="noopener">
+        <div class="pfp"><span>F</span><img src="images/friend-1.png" alt="" onerror="this.remove()"></div>
+        <div class="f-text"><span class="f-name">Friend One</span><span class="f-note">Write something about them</span></div>
+      </a>
+      <a class="friend purple" href="#" target="_blank" rel="noopener">
+        <div class="pfp"><span>F</span><img src="images/friend-2.png" alt="" onerror="this.remove()"></div>
+        <div class="f-text"><span class="f-name">Friend Two</span><span class="f-note">Write something about them</span></div>
+      </a>
+      <a class="friend blue" href="#" target="_blank" rel="noopener">
+        <div class="pfp"><span>F</span><img src="images/friend-3.png" alt="" onerror="this.remove()"></div>
+        <div class="f-text"><span class="f-name">Friend Three</span><span class="f-note">Write something about them</span></div>
+      </a>
+      <a class="friend purple" href="#" target="_blank" rel="noopener">
+        <div class="pfp"><span>F</span><img src="images/friend-4.png" alt="" onerror="this.remove()"></div>
+        <div class="f-text"><span class="f-name">Friend Four</span><span class="f-note">Write something about them</span></div>
+      </a>
     </div>
   </section>
 
@@ -547,7 +653,7 @@
 
 </main>
 
-<footer>Made with <span style="color: var(--purple)">♥</span> by happyguy04</footer>
+<footer>Made with <span id="heart" style="color: var(--purple); cursor: pointer;">♥</span> by happyguy04</footer>
 
 <script>
   /* EDIT ME: the lines that get typed out under your name */
@@ -606,6 +712,251 @@
     }
     setTimeout(() => { hint.innerHTML = "#70A1E2 &middot; tap to copy"; }, 1800);
   });
+
+  /* =====================================================
+     EASTER EGGS
+     ===================================================== */
+
+  /* ---- Click the dream car: a badly cut-out car zooms across the screen ----
+     EDIT ME: put your own cut-out picture of the car in the images folder
+     (a PNG with a see-through background works best) and set the name here.
+     Until the picture exists, a racing-car emoji zooms instead. */
+  const CAR_IMAGE = "images/camaro.png";
+  const CAR_FACES = "right";   // which way the car in YOUR picture points: "right" or "left"
+
+  let hasCarImg = false, carAspect = 2.2, carBusy = false;
+  const probe = new Image();
+  probe.onload = () => { hasCarImg = true; carAspect = (probe.naturalWidth / probe.naturalHeight) || 2.2; };
+  probe.src = CAR_IMAGE;
+
+  /* Sound is made with the browser's built-in synth, so there is no audio file to upload */
+  let audioCtx;
+  function getCtx() {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    audioCtx = audioCtx || new AC();
+    if (audioCtx.state === "suspended") audioCtx.resume();
+    return audioCtx;
+  }
+
+  function carSound(d) {   // d = length in seconds. Goes "neeeurrr".
+    try {
+      const ctx = getCtx(); if (!ctx) return;
+      const t = ctx.currentTime;
+
+      const filter = ctx.createBiquadFilter();
+      filter.type = "lowpass"; filter.Q.value = 5;
+      filter.frequency.setValueAtTime(500, t);
+      filter.frequency.exponentialRampToValueAtTime(2800, t + d * 0.5);
+      filter.frequency.exponentialRampToValueAtTime(500, t + d);
+
+      const trem = ctx.createGain(); trem.gain.value = 0.7;           // the engine "rrr" growl
+      const lfo = ctx.createOscillator(); lfo.frequency.value = 34;
+      const lfoDepth = ctx.createGain(); lfoDepth.gain.value = 0.3;
+      lfo.connect(lfoDepth); lfoDepth.connect(trem.gain);
+
+      const env = ctx.createGain();                                    // loudest as it passes you
+      env.gain.setValueAtTime(0.0001, t);
+      env.gain.exponentialRampToValueAtTime(0.12, t + d * 0.48);
+      env.gain.exponentialRampToValueAtTime(0.08, t + d * 0.58);
+      env.gain.exponentialRampToValueAtTime(0.0001, t + d);
+
+      filter.connect(trem); trem.connect(env); env.connect(ctx.destination);
+
+      [["sawtooth", 1], ["square", 1.01]].forEach(([wave, m]) => {
+        const o = ctx.createOscillator();
+        o.type = wave;
+        o.frequency.setValueAtTime(120 * m, t);
+        o.frequency.exponentialRampToValueAtTime(520 * m, t + d * 0.5);   // "neee" coming at you
+        o.frequency.exponentialRampToValueAtTime(210 * m, t + d * 0.58);  // whoosh past
+        o.frequency.exponentialRampToValueAtTime(70 * m, t + d);          // "urrr" driving away
+        o.connect(filter);
+        o.start(t); o.stop(t + d + 0.05);
+      });
+      lfo.start(t); lfo.stop(t + d + 0.05);
+    } catch (err) { /* no sound is fine */ }
+  }
+
+  function zoomCar(fromEl, done) {
+    const W = window.innerWidth;
+    const h = Math.max(70, Math.min(130, W * 0.14));
+    const el = document.createElement("div");
+    el.className = "zoomer";
+    let w;
+    if (hasCarImg) {
+      const img = new Image();
+      img.src = CAR_IMAGE; img.alt = "";
+      img.style.height = h + "px";
+      w = h * carAspect;
+      el.appendChild(img);
+    } else {
+      el.innerHTML = '<div class="zoomer-emoji">🏎️</div>';
+      el.firstChild.style.fontSize = h + "px";
+      w = h * 1.2;
+    }
+    document.body.appendChild(el);
+
+    const facesRight = hasCarImg ? CAR_FACES === "right" : false;   // the emoji car faces left
+    const dir = facesRight ? 1 : -1;
+    const r = fromEl.getBoundingClientRect();
+    const y = Math.max(8, Math.min(window.innerHeight - h - 8, r.top + r.height / 2 - h / 2));
+    const x0 = facesRight ? -w - 60 : W + 60;
+    const x1 = facesRight ? W + 60 : -w - 60;
+    const at = (p, dy, rot) => `translate(${x0 + (x1 - x0) * p}px, ${y + dy}px) rotate(${rot}deg)`;
+
+    if (reduceMotion) {   // gentle version: just fades in and out in the middle
+      el.style.transform = `translate(${(W - w) / 2}px, ${y}px)`;
+      el.animate([{ opacity: 0 }, { opacity: 1, offset: 0.2 }, { opacity: 1, offset: 0.8 }, { opacity: 0 }],
+                 { duration: 1400 }).onfinish = () => { el.remove(); done(); };
+      return;
+    }
+
+    el.animate([
+      { transform: at(0, 0, 0) },
+      { transform: at(0.2, -6, -2 * dir) },
+      { transform: at(0.4, 5, 2 * dir) },
+      { transform: at(0.6, -7, -2.5 * dir) },
+      { transform: at(0.8, 4, 1.5 * dir) },
+      { transform: at(1, 0, 0) }
+    ], { duration: 1600, easing: "linear", fill: "forwards" }).onfinish = () => { el.remove(); done(); };
+  }
+
+  const carCard = document.getElementById("car");
+  function launchCar() {
+    if (carBusy) return;
+    carBusy = true;
+    carCard.classList.add("rev");
+    setTimeout(() => carCard.classList.remove("rev"), 450);
+    carSound(1.6);
+    zoomCar(carCard, () => { carBusy = false; });
+  }
+  carCard.addEventListener("click", launchCar);
+  carCard.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); launchCar(); }
+  });
+
+  /* ---- Little pop-up message ---- */
+  const toastEl = document.createElement("div");
+  toastEl.className = "toast";
+  document.body.appendChild(toastEl);
+  let toastTimer;
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove("show"), 2600);
+  }
+
+  /* ---- Confetti ---- */
+  function confetti(x, y, n = 40) {
+    if (reduceMotion) return;
+    const colors = ["#70A1E2", "#a9d2ff", "#c268ec", "#ffffff"];
+    for (let i = 0; i < n; i++) {
+      const piece = document.createElement("i");
+      piece.className = "confetti";
+      piece.style.background = colors[i % colors.length];
+      piece.style.left = x + "px";
+      piece.style.top = y + "px";
+      document.body.appendChild(piece);
+      const a = Math.random() * Math.PI * 2, v = 120 + Math.random() * 240;
+      piece.animate([
+        { transform: "translate(0, 0) rotate(0deg)", opacity: 1 },
+        { transform: `translate(${Math.cos(a) * v}px, ${Math.sin(a) * v + 220}px) rotate(${Math.random() * 720}deg)`, opacity: 0 }
+      ], { duration: 1100 + Math.random() * 700, easing: "cubic-bezier(.1,.6,.3,1)" }).onfinish = () => piece.remove();
+    }
+  }
+
+  /* ---- Click the avatar 5 times quickly ---- */
+  let avatarClicks = 0, avatarTimer;
+  document.getElementById("avatar").addEventListener("click", (e) => {
+    avatarClicks++;
+    clearTimeout(avatarTimer);
+    avatarTimer = setTimeout(() => { avatarClicks = 0; }, 1500);
+    if (avatarClicks >= 5) {
+      avatarClicks = 0;
+      const r = e.currentTarget.getBoundingClientRect();
+      confetti(r.left + r.width / 2, r.top + r.height / 2);
+      toast("🎉 You found a secret!");
+    }
+  });
+
+  /* ---- Click the little heart in the footer ---- */
+  document.getElementById("heart").addEventListener("click", (e) => {
+    if (reduceMotion) { toast("♥"); return; }
+    const r = e.currentTarget.getBoundingClientRect();
+    for (let i = 0; i < 8; i++) {
+      const heart = document.createElement("span");
+      heart.className = "float-heart";
+      heart.textContent = "♥";
+      heart.style.left = (r.left + r.width / 2) + "px";
+      heart.style.top = r.top + "px";
+      heart.style.color = i % 2 ? "#70A1E2" : "#c268ec";
+      heart.style.fontSize = (14 + Math.random() * 18) + "px";
+      document.body.appendChild(heart);
+      const dx = (Math.random() - 0.5) * 120, dy = -80 - Math.random() * 120;
+      heart.animate([
+        { transform: "translate(-50%, 0)", opacity: 1 },
+        { transform: `translate(calc(-50% + ${dx}px), ${dy}px)`, opacity: 0 }
+      ], { duration: 1200 + Math.random() * 600, easing: "ease-out", delay: i * 60, fill: "backwards" }).onfinish = () => heart.remove();
+    }
+  });
+
+  /* ---- Type "doors" anywhere: knock knock knock ---- */
+  function knockSound() {
+    try {
+      const ctx = getCtx(); if (!ctx) return;
+      [0, 0.3, 0.6].forEach((delay) => {
+        const t = ctx.currentTime + delay;
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = "sine";
+        o.frequency.setValueAtTime(160, t);
+        o.frequency.exponentialRampToValueAtTime(55, t + 0.12);
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.exponentialRampToValueAtTime(0.7, t + 0.01);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + 0.18);
+        o.connect(g); g.connect(ctx.destination);
+        o.start(t); o.stop(t + 0.2);
+      });
+    } catch (err) { /* no sound is fine */ }
+  }
+  function knock() {
+    toast("🚪 knock knock knock...");
+    knockSound();
+    if (reduceMotion) return;
+    document.querySelector(".wrap").animate([
+      { transform: "translateX(0)" }, { transform: "translateX(-6px)" }, { transform: "translateX(5px)" },
+      { transform: "translateX(-3px)" }, { transform: "translateX(0)" }
+    ], { duration: 300, iterations: 3 });
+  }
+
+  /* ---- Konami code (up up down down left right left right b a): colors go wild ---- */
+  function partyMode() {
+    toast("✨ HappyGuy mode unlocked");
+    confetti(window.innerWidth / 2, window.innerHeight / 3, 90);
+    if (reduceMotion) return;
+    [".wrap", ".blobs"].forEach((sel) => {
+      document.querySelector(sel).animate(
+        [{ filter: "hue-rotate(0deg)" }, { filter: "hue-rotate(360deg)" }],
+        { duration: 4000, iterations: 2 });
+    });
+  }
+
+  const KONAMI = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"];
+  let konamiPos = 0, typed = "";
+  document.addEventListener("keydown", (e) => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    const k = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+    konamiPos = (k === KONAMI[konamiPos]) ? konamiPos + 1 : (k === KONAMI[0] ? 1 : 0);
+    if (konamiPos === KONAMI.length) { konamiPos = 0; partyMode(); }
+    if (e.key.length === 1) {
+      typed = (typed + e.key.toLowerCase()).slice(-5);
+      if (typed === "doors") { typed = ""; knock(); }
+    }
+  });
+
+  /* ---- A hello for anyone who opens the developer console ---- */
+  console.log("%cHey, you found the console 👀", "color:#70A1E2;font-size:16px;font-weight:bold");
+  console.log("There are a few secrets hidden on this page. Try clicking things.");
 </script>
 </body>
 </html>
