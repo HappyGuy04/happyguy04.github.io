@@ -1,0 +1,611 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>happyguy04</title>
+<meta name="description" content="About me, my favourites, what I'm building, and where to find me online.">
+<meta name="theme-color" content="#70A1E2">
+<style>
+  /* =====================================================
+     HappyGuy Blue™ + purple live here. Change these to restyle the site.
+     ===================================================== */
+  :root {
+    --bg: #090e1b;
+    --card: rgba(255, 255, 255, 0.06);
+    --card-border: rgba(255, 255, 255, 0.12);
+    --text: #eef3ff;
+    --muted: #a9b6d3;
+    --accent: #70A1E2;      /* HappyGuy Blue™ */
+    --accent-2: #a9d2ff;    /* lighter shade for gradients */
+    --accent-3: #3f6fc0;    /* deeper shade for glows */
+    --purple: #c268ec;      /* accent purple */
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ---------- Animated background blobs ---------- */
+  .blobs { position: fixed; inset: 0; z-index: -1; overflow: hidden; }
+  .blob {
+    position: absolute;
+    width: 46vmax; height: 46vmax;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: 0.32;
+    animation: drift 22s ease-in-out infinite alternate;
+  }
+  .blob.one   { background: var(--accent);   top: -15vmax; left: -10vmax; }
+  .blob.two   { background: var(--accent-3); bottom: -18vmax; right: -12vmax; animation-duration: 28s; }
+  .blob.three { background: var(--purple); top: 40%; left: 45%; width: 28vmax; height: 28vmax; opacity: 0.2; animation-duration: 34s; }
+
+  @keyframes drift {
+    0%   { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(8vmax, 6vmax) scale(1.15); }
+  }
+
+  .wrap { max-width: 920px; margin: 0 auto; padding: 0 22px; }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    min-height: 92vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 60px 0 40px;
+  }
+
+  .avatar {
+    width: 132px; height: 132px;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    font-size: 3.4rem; font-weight: 800;
+    color: #0a1226;
+    background: linear-gradient(135deg, var(--accent), var(--purple));
+    box-shadow: 0 0 0 4px rgba(255,255,255,0.08), 0 20px 60px rgba(194, 104, 236, 0.45);
+    margin-bottom: 26px;
+    animation: float 5s ease-in-out infinite;
+  }
+  /* To use a real picture: put it in the repo as avatar.jpg, then replace the
+     <div class="avatar">H</div> below with:
+     <img class="avatar" src="avatar.jpg" alt="Me" style="object-fit:cover"> */
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-10px); }
+  }
+
+  h1 {
+    font-size: clamp(2.4rem, 7vw, 4rem);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    background: linear-gradient(90deg, #fff, var(--accent-2), var(--accent), var(--purple));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .tagline {
+    margin-top: 14px;
+    font-size: clamp(1.05rem, 2.6vw, 1.35rem);
+    color: var(--muted);
+    min-height: 1.8em;
+  }
+  .cursor {
+    display: inline-block;
+    width: 2px; height: 1.1em;
+    background: var(--accent);
+    margin-left: 3px;
+    vertical-align: text-bottom;
+    animation: blink 0.9s steps(1) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .scroll-hint {
+    margin-top: 48px;
+    color: var(--muted);
+    font-size: 0.9rem;
+    animation: bob 2.2s ease-in-out infinite;
+  }
+  @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+
+  /* ---------- Sections ---------- */
+  section { padding: 52px 0; }
+  h2 {
+    font-size: 1.7rem;
+    margin-bottom: 22px;
+    letter-spacing: -0.01em;
+  }
+  h2 span {
+    background: linear-gradient(90deg, var(--accent), var(--purple));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .about p { color: var(--muted); font-size: 1.08rem; max-width: 62ch; }
+  .about p + p { margin-top: 14px; }
+
+  /* ---------- Currently working on ---------- */
+  .now {
+    position: relative;
+    background: linear-gradient(135deg, rgba(112,161,226,0.18), rgba(194,104,236,0.12));
+    border: 1px solid rgba(112,161,226,0.45);
+    border-radius: 20px;
+    padding: 26px 28px;
+    overflow: hidden;
+  }
+  .now .label {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-size: 0.8rem; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--purple);
+    margin-bottom: 8px;
+  }
+  .pulse {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 0 rgba(112,161,226,0.7);
+    animation: pulse 1.8s ease-out infinite;
+  }
+  @keyframes pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(112,161,226,0.7); }
+    100% { box-shadow: 0 0 0 16px rgba(112,161,226,0); }
+  }
+  .now h3 { font-size: 1.35rem; margin-bottom: 4px; }
+  .now p  { color: var(--muted); }
+
+  /* ---------- Favourites: fanned-out cards ---------- */
+  .hint { color: var(--muted); font-size: 0.9rem; margin: -10px 0 8px; }
+
+  .fans {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 40px 24px;
+  }
+  .fan-group.blue   { --c: 112, 161, 226; }
+  .fan-group.purple { --c: 194, 104, 236; }
+
+  .fan-group h3 {
+    text-align: center;
+    font-size: 1.05rem;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+
+  .hand {
+    --w: 132px;
+    display: flex;
+    justify-content: center;
+    padding: 44px 0 14px;
+  }
+
+  /* The slot is the fixed "hit area". It holds the fanned pose and never
+     moves on hover, so the hover can't flicker. Only the tile inside moves. */
+  .slot {
+    --rot: 0deg;
+    position: relative;
+    z-index: 1;
+    width: var(--w);
+    margin-left: calc(var(--w) * -0.2);
+    transform: rotate(var(--rot));
+    transform-origin: 50% 130%;
+    cursor: pointer;
+    outline: none;
+  }
+  .slot:first-child { margin-left: 0; }
+  .slot { display: block; text-decoration: none; color: inherit; }
+  .slot:nth-child(1) { --rot: -9deg; z-index: 1; }
+  .slot:nth-child(2) { --rot: 0deg;  z-index: 2; }
+  .slot:nth-child(3) { --rot: 9deg;  z-index: 3; }
+  .slot:hover, .slot:focus { z-index: 10; }
+
+  .tile {
+    height: calc(var(--w) * 1.42);
+    border-radius: 16px;
+    padding: 14px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    text-align: center;
+    background: linear-gradient(160deg, rgba(var(--c), 0.4), rgba(14, 20, 40, 0.97) 72%);
+    border: 1px solid rgba(var(--c), 0.55);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+    transition: transform 0.4s cubic-bezier(.2, .8, .2, 1),
+                box-shadow 0.4s ease,
+                border-color 0.4s ease;
+    will-change: transform;
+  }
+  .slot:hover .tile,
+  .slot:focus .tile {
+    transform: translateY(-32px) rotate(calc(var(--rot) * -1)) scale(1.12);
+    border-color: rgb(var(--c));
+    box-shadow: 0 24px 46px rgba(var(--c), 0.4);
+  }
+
+  .tile .kind {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgb(var(--c));
+  }
+  .tile .icon { font-size: 2.3rem; line-height: 1; }
+  .tile .art { width: 100%; flex: 1; min-height: 0; object-fit: cover; border-radius: 10px; margin: 8px 0; }
+  .tile .name {
+    font-weight: 700;
+    font-size: 0.95rem;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+
+  @media (max-width: 480px) {
+    .fans { grid-template-columns: 1fr; }
+    .hand { --w: 108px; }
+    .tile .icon { font-size: 1.9rem; }
+    .tile .name { font-size: 0.85rem; }
+  }
+
+  /* Dream car gets its own wide card */
+  .car {
+    margin-top: 28px;
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px;
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 18px;
+    padding: 26px 28px;
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  }
+  .car:hover { transform: translateY(-4px); border-color: var(--purple); box-shadow: 0 16px 40px rgba(194,104,236,0.25); }
+  .car .small { color: var(--muted); font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; }
+  .car .name  { font-size: clamp(1.3rem, 4vw, 1.9rem); font-weight: 800; }
+  .car .emoji { font-size: 2.6rem; }
+
+  /* ---------- Colour swatch ---------- */
+  .swatch-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .swatch {
+    appearance: none; border: 0; cursor: pointer;
+    width: 64px; height: 64px; border-radius: 16px;
+    background: #70A1E2;
+    box-shadow: 0 10px 30px rgba(112,161,226,0.5);
+    transition: transform 0.2s ease;
+  }
+  .swatch:hover { transform: scale(1.1) rotate(-4deg); }
+  .swatch-row strong { display: block; font-size: 1.1rem; }
+  .swatch-row small  { color: var(--muted); }
+
+  /* ---------- Links ---------- */
+  .links { display: flex; flex-wrap: wrap; gap: 12px; }
+  .link {
+    --dot: var(--accent);
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 13px 22px;
+    border-radius: 999px;
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 600;
+    transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+  }
+  .link::before {
+    content: "";
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--dot);
+    box-shadow: 0 0 12px var(--dot);
+  }
+  .link::after {
+    content: "\2192";
+    opacity: 0;
+    transform: translateX(-6px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+  .link:hover {
+    transform: translateY(-3px);
+    background: rgba(255,255,255,0.12);
+    border-color: var(--dot);
+  }
+  .link:hover::after { opacity: 1; transform: translateX(0); }
+
+  .link.youtube { --dot: #ff3b3b; }
+  .link.roblox  { --dot: #e2231a; }
+  .link.discord { --dot: #5865f2; }
+  .link.twitter { --dot: #1d9bf0; }
+
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.85rem;
+    padding: 40px 0 50px;
+  }
+
+  /* ---------- Scroll-reveal animation ---------- */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.8s ease, transform 0.8s cubic-bezier(.2,.7,.2,1);
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+  .fans .reveal:nth-child(2) { transition-delay: 0.1s; }
+  .fans .reveal:nth-child(3) { transition-delay: 0.2s; }
+  .fans .reveal:nth-child(4) { transition-delay: 0.3s; }
+
+  /* Respect people who turn animations off in their device settings */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .reveal { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="blobs" aria-hidden="true">
+  <div class="blob one"></div>
+  <div class="blob two"></div>
+  <div class="blob three"></div>
+</div>
+
+<main class="wrap">
+
+  <header class="hero">
+    <div class="avatar">H</div>
+    <h1>Hey, I'm happyguy04</h1>
+    <p class="tagline"><span id="typed"></span><span class="cursor"></span></p>
+    <div class="scroll-hint">scroll down &darr;</div>
+  </header>
+
+  <!-- EDIT ME: write a few sentences about yourself -->
+  <section class="about reveal">
+    <h2>About <span>me</span></h2>
+    <p>I love making things and sharing them with people. Write a sentence or two here about who you are, where you're from, and what you're into.</p>
+    <p>Add another short paragraph if you want.</p>
+  </section>
+
+  <section>
+    <div class="now reveal">
+      <div class="label"><span class="pulse"></span> Currently working on</div>
+      <h3>A Roblox badge tracker for DOORS</h3>
+      <p>Keeping track of every badge so you can see what you've earned and what's left to hunt.</p>
+    </div>
+  </section>
+
+  <!-- Each <a class="slot"> is one card.
+       href="..."        = where the card goes when clicked (swap in your own link)
+       src="images/..."  = the picture, uploaded to an "images" folder in your repo.
+       If the picture is missing, the emoji shows instead. Keep 3 cards per hand. -->
+  <section>
+    <h2 class="reveal">My <span>favourites</span></h2>
+    <p class="hint reveal">Hover over a card to pull it to the front, and click it to open.</p>
+
+    <div class="fans">
+
+      <div class="fan-group blue reveal">
+        <h3>🎮 Games</h3>
+        <div class="hand">
+          <a class="slot" href="https://www.roblox.com/search/experiences?keyword=DOORS" target="_blank" rel="noopener" aria-label="DOORS">
+            <div class="tile">
+              <span class="kind">Game</span>
+              <img class="art" src="images/DOORS_Icon.png" alt="" onerror="this.remove()" onload="this.nextElementSibling.style.display='none'">
+              <span class="icon">🚪</span>
+              <span class="name">DOORS</span>
+            </div>
+          </a>
+          <a class="slot" href="https://www.gran-turismo.com/" target="_blank" rel="noopener" aria-label="Gran Turismo 7">
+            <div class="tile">
+              <span class="kind">Game</span>
+              <img class="art" src="images/GT7_Icon.png" alt="" onerror="this.remove()" onload="this.nextElementSibling.style.display='none'">
+              <span class="icon">🏁</span>
+              <span class="name">Gran Turismo 7</span>
+            </div>
+          </a>
+          <a class="slot" href="https://www.minecraft.net/" target="_blank" rel="noopener" aria-label="Minecraft">
+            <div class="tile">
+              <span class="kind">Game</span>
+              <img class="art" src="images/Minecraft_Icon.png" alt="" onerror="this.remove()" onload="this.nextElementSibling.style.display='none'">
+              <span class="icon">⛏️</span>
+              <span class="name">Minecraft</span>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <div class="fan-group purple reveal">
+        <h3>🎵 Songs</h3>
+        <div class="hand">
+          <a class="slot" href="https://open.spotify.com/track/0StTPPu2Zb2wgaPDJhBaTX" target="_blank" rel="noopener" aria-label="No One To Kill In The Sky">
+            <div class="tile">
+              <span class="kind">Song</span>
+              <img class="art" src="images/No_One_To_Kill_In_The_Sky.png" alt="" onerror="this.remove()" onload="this.nextElementSibling.style.display='none'">
+              <span class="icon">🎵</span>
+              <span class="name">No One To Kill In The Sky</span>
+            </div>
+          </a>
+          <a class="slot" href="https://open.spotify.com/track/5gZQWFLX4irT5KukP56zc3" target="_blank" rel="noopener" aria-label="Baggage">
+            <div class="tile">
+              <span class="kind">Song</span>
+              <img class="art" src="images/Baggage.png" alt="" onerror="this.remove()" onload="this.nextElementSibling.style.display='none'">
+              <span class="icon">🎶</span>
+              <span class="name">Baggage</span>
+            </div>
+          </a>
+          <a class="slot" href="https://open.spotify.com/track/5VltqFuugeKmoeoQovvGXM" target="_blank" rel="noopener" aria-label="Generation Z">
+            <div class="tile">
+              <span class="kind">Song</span>
+              <img class="art" src="images/Generation_Z.png" alt="" onerror="this.remove()" onload="this.nextElementSibling.style.display='none'">
+              <span class="icon">🎧</span>
+              <span class="name">Generation Z</span>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <div class="fan-group blue reveal">
+        <h3>🎤 Artists</h3>
+        <div class="hand">
+          <a class="slot" href="https://open.spotify.com/artist/3ebD7fhAtxAuVaIxi1T2BJ" target="_blank" rel="noopener" aria-label="Seb Lowe">
+            <div class="tile">
+              <span class="kind">Artist</span>
+              <img class="art" src="images/Seb_Lowe.png" alt="" onerror="this.remove()" onload="this.nextElementSibling.style.display='none'">
+              <span class="icon">🎤</span>
+              <span class="name">Seb Lowe</span>
+            </div>
+          </a>
+          <a class="slot" href="https://open.spotify.com/artist/7iS4CQkDpux3s40py3SqZi" target="_blank" rel="noopener" aria-label="Naethan Apollo">
+            <div class="tile">
+              <span class="kind">Artist</span>
+              <img class="art" src="images/Naethan_Apollo.png" alt="" onerror="this.remove()" onload="this.nextElementSibling.style.display='none'">
+              <span class="icon">✨</span>
+              <span class="name">Naethan Apollo</span>
+            </div>
+          </a>
+          <a class="slot" href="https://open.spotify.com/artist/0Repe2EiNjaFAFIukrroUM" target="_blank" rel="noopener" aria-label="Ren">
+            <div class="tile">
+              <span class="kind">Artist</span>
+              <img class="art" src="images/Ren.png" alt="" onerror="this.remove()" onload="this.nextElementSibling.style.display='none'">
+              <span class="icon">🎙️</span>
+              <span class="name">Ren</span>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <div class="fan-group purple reveal">
+        <h3>🎸 Bands</h3>
+        <div class="hand">
+          <a class="slot" href="https://open.spotify.com/artist/4S2yOnmsWW97dT87yVoaSZ" target="_blank" rel="noopener" aria-label="NOFX">
+            <div class="tile">
+              <span class="kind">Band</span>
+              <img class="art" src="images/NOFX.png" alt="" onerror="this.remove()" onload="this.nextElementSibling.style.display='none'">
+              <span class="icon">🎸</span>
+              <span class="name">NOFX</span>
+            </div>
+          </a>
+          <a class="slot" href="https://open.spotify.com/artist/0e5Rda7VQAY786739xp0Jt" target="_blank" rel="noopener" aria-label="Rare Americans">
+            <div class="tile">
+              <span class="kind">Band</span>
+              <img class="art" src="images/Rare_Americans.png" alt="" onerror="this.remove()" onload="this.nextElementSibling.style.display='none'">
+              <span class="icon">🤘</span>
+              <span class="name">Rare Americans</span>
+            </div>
+          </a>
+          <a class="slot" href="https://open.spotify.com/artist/38SKxCyfrmNWqWunb9wGHP" target="_blank" rel="noopener" aria-label="Good Kid">
+            <div class="tile">
+              <span class="kind">Band</span>
+              <img class="art" src="images/Good_Kid.png" alt="" onerror="this.remove()" onload="this.nextElementSibling.style.display='none'">
+              <span class="icon">🥁</span>
+              <span class="name">Good Kid</span>
+            </div>
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="car reveal">
+      <div>
+        <div class="small">Dream car</div>
+        <div class="name">2018 Camaro ZL1 1LE</div>
+      </div>
+      <span class="emoji">🏎️</span>
+    </div>
+  </section>
+
+  <section class="reveal">
+    <h2>My <span>colour</span></h2>
+    <div class="swatch-row">
+      <button class="swatch" id="swatch" aria-label="Copy colour code #70A1E2"></button>
+      <div>
+        <strong>HappyGuy Blue™</strong>
+        <small id="swatchHint">#70A1E2 &middot; tap to copy</small>
+      </div>
+    </div>
+  </section>
+
+  <!-- EDIT ME: replace each href="#" with your real link.
+       Delete any line you don't use, or copy one to add more. -->
+  <section>
+    <h2 class="reveal">Find <span>me</span></h2>
+    <div class="links reveal">
+      <a class="link youtube" href="#" target="_blank" rel="noopener">YouTube</a>
+      <a class="link roblox"  href="#" target="_blank" rel="noopener">Roblox</a>
+      <a class="link discord" href="#" target="_blank" rel="noopener">Discord</a>
+      <a class="link twitter" href="#" target="_blank" rel="noopener">Twitter / X</a>
+    </div>
+  </section>
+
+</main>
+
+<footer>Made with <span style="color: var(--purple)">♥</span> by happyguy04</footer>
+
+<script>
+  /* EDIT ME: the lines that get typed out under your name */
+  const lines = [
+    "Roblox builder",
+    "DOORS fan",
+    "Building a DOORS badge tracker"
+  ];
+
+  const el = document.getElementById("typed");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (reduceMotion) {
+    el.textContent = lines[0];
+  } else {
+    let line = 0, char = 0, deleting = false;
+    function type() {
+      const current = lines[line];
+      el.textContent = current.slice(0, char);
+      let delay = deleting ? 35 : 75;
+
+      if (!deleting && char === current.length) {
+        delay = 1500; deleting = true;
+      } else if (deleting && char === 0) {
+        deleting = false;
+        line = (line + 1) % lines.length;
+        delay = 400;
+      } else {
+        char += deleting ? -1 : 1;
+      }
+      setTimeout(type, delay);
+    }
+    type();
+  }
+
+  /* Fade things in as you scroll down */
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add("visible");
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll(".reveal").forEach(n => io.observe(n));
+
+  /* Tap the swatch to copy the colour code */
+  const swatch = document.getElementById("swatch");
+  const hint = document.getElementById("swatchHint");
+  swatch.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText("#70A1E2");
+      hint.textContent = "Copied!";
+    } catch (err) {
+      hint.textContent = "#70A1E2";
+    }
+    setTimeout(() => { hint.innerHTML = "#70A1E2 &middot; tap to copy"; }, 1800);
+  });
+</script>
+</body>
+</html>
